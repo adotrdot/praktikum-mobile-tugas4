@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:praktikum_pert4/bloc/produk_bloc.dart';
 import 'package:praktikum_pert4/model/produk.dart';
 import 'package:praktikum_pert4/ui/produk_form.dart';
+import 'package:praktikum_pert4/ui/produk_page.dart';
 
 class ProdukDetail extends StatefulWidget {
   Produk? produk;
@@ -8,7 +10,7 @@ class ProdukDetail extends StatefulWidget {
   ProdukDetail({Key? key, this.produk}) : super(key: key);
 
   @override
-  State<ProdukDetail> createState() => _ProdukDetailState();
+  _ProdukDetailState createState() => _ProdukDetailState();
 }
 
 class _ProdukDetailState extends State<ProdukDetail> {
@@ -40,44 +42,55 @@ class _ProdukDetailState extends State<ProdukDetail> {
     );
   }
 
-  // Membuat tombol edit dan hapus
   Widget _tombolHapusEdit() {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Tombol edit
+//Tombol Edit
+
         OutlinedButton(
+            child: const Text("EDIT"),
             onPressed: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          ProdukForm(produk: widget.produk!)));
-            },
-            child: const Text("EDIT")),
+                      builder: (context) => ProdukForm(
+                            produk: widget.produk!,
+                          )));
+            }),
 
-        // Tombol hapus
+//Tombol Hapus
+
         OutlinedButton(
-            onPressed: () => confirmHapus(), child: const Text("DELETE")),
+            child: const Text("DELETE"), onPressed: () => confirmHapus()),
       ],
     );
   }
 
-  // Method confirm hapus
   void confirmHapus() {
     AlertDialog alertDialog = AlertDialog(
       content: const Text("Yakin ingin menghapus data ini?"),
       actions: [
-        // Tombol hapus
-        OutlinedButton(onPressed: () {}, child: const Text("Ya")),
+//tombol hapus
 
-        // Tombol batal
         OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Batal")),
+          child: const Text("Ya"),
+          onPressed: () {
+            ProdukBloc.deleteProduk(id: widget.produk!.id).then((value) =>
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProdukPage())));
+          },
+        ),
+
+//tombol batal
+
+        OutlinedButton(
+          child: const Text("Batal"),
+          onPressed: () => Navigator.pop(context),
+        )
       ],
     );
 
-    showDialog(context: context, builder: (context) => alertDialog);
+    showDialog(builder: (context) => alertDialog, context: context);
   }
 }
